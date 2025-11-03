@@ -1,2 +1,22 @@
-# dental-lab-monorepo
-Full-stack Dental Lab Management System — built as a monorepo containing the web frontend (React &amp; Next.js), backend API (Node.js &amp; Express), and mobile app (Flutter).  Designed to manage dental lab operations efficiently, including orders, patients, technicians, and communication between dentists and labs.
+# 🦷 Dental Lab Monorepo
+
+A complete **Dental Lab Management System** built with a **monorepo architecture** — combining web, backend, and mobile solutions in one unified project.
+
+## 🧩 Project Overview
+This system allows dental laboratories to:
+- Manage patient and dentist data
+- Handle orders and lab tasks
+- Track job progress
+- Access reports and invoices
+- Connect with a mobile app for real-time updates
+
+## 🏗️ Tech Stack
+| Layer | Technology |
+|--------|-------------|
+| Frontend | React + Next.js |
+| Backend | Node.js + Express |
+| Mobile | Flutter |
+| Database | MongoDB |
+| Authentication | JWT-based |
+
+## 📂 Project Structure
