@@ -8,9 +8,11 @@ import compression from "compression";
 import helmet from "helmet";
 import authRoutes from "./src/routes/auth.routes";
 import morgan from "morgan";
+import { setupSwagger } from "./src/config/swagger";
 
 const app = express();
 app.use(morgan("dev"));
+setupSwagger(app);
 
 
 // TODO: Security middleware

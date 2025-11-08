@@ -5,10 +5,10 @@
 
 import { bcryptPassword, verifyPassword } from "../utils/encryption.util";
 import { generateAccessToken, generateRefreshToken } from "../utils/token.util";
-import {prisma} from "../lib/prisma";
+import { prisma } from "../lib/prisma";
 import logger from "../utils/logger.util";
 import jwt from "jsonwebtoken";
-
+import { logout } from "../controllers/auth.controller";
 
 interface RegisterInput {
   fullName: string;
@@ -24,7 +24,8 @@ interface RefreshTokenResult {
 }
 
 export const registerUser = async (input: RegisterInput) => {
-  const { fullName, email, password, phoneNumber, clinicName, clinicAddress } = input;
+  const { fullName, email, password, phoneNumber, clinicName, clinicAddress } =
+    input;
 
   try {
     // Check if email exists
@@ -34,7 +35,7 @@ export const registerUser = async (input: RegisterInput) => {
 
     if (existingUser) {
       logger.warn(`Registration attempted with existing email: ${email}`);
-      throw new Error('Email already registered');
+      throw new Error("Email already registered");
     }
 
     // Hash password
@@ -72,91 +73,92 @@ export const registerUser = async (input: RegisterInput) => {
     logger.error(`Registration error: ${error.message}`);
     throw error;
   }
-}
+};
 
 export const loginUser = async (email: string, password: string) => {
-  const user =await prisma.user.findUnique({where: {email}})
-  
+  const user = await prisma.user.findUnique({ where: { email } });
+
   if (!user) {
     throw new Error("User not found");
   }
-  const isPasswordValid  = await verifyPassword(password, user.password);
+  const isPasswordValid = await verifyPassword(password, user.password);
   if (!isPasswordValid) {
-    throw new Error("Invalid password")
+    throw new Error("Invalid password");
   }
   if (!user.isVerified) {
     throw new Error("Please check your email to verify your account.");
   }
 
-  const accessToken = generateAccessToken({id:user.id,email:user.email})
-  const refreshToken = generateRefreshToken({id:user.id,email:user.email})
-  const session =await prisma.session.create({
+  const accessToken = generateAccessToken({ id: user.id, email: user.email });
+  const refreshToken = generateRefreshToken({ id: user.id, email: user.email });
+  const session = await prisma.session.create({
     data: {
-      userId:user.id,
+      userId: user.id,
       refreshToken,
-      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    }
-  })
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    },
+  });
 
   return {
-    id:user.id,
+    id: user.id,
     accessToken,
     refreshToken,
-    email:user.email,
-    name:user.fullName,
-    session
-  }
+    email: user.email,
+    name: user.fullName,
+    session,
+  };
 };
 
+export const refreshTokenService = async (
+  tokenFromCookie: string
+): Promise<RefreshTokenResult> => {
+  if (!tokenFromCookie) throw new Error("No Refresh Token");
 
+  let payload: any;
+  try {
+    payload = jwt.verify(tokenFromCookie, process.env.JWT_REFRESH_SECRET!);
+  } catch {
+    throw new Error("Invalid or tampered refresh token");
+  }
+  const session = await prisma.session.findUnique({
+    where: { refreshToken: tokenFromCookie },
+  });
 
+  if (!session) throw new Error("Invalid refresh token");
 
-export const refreshTokenService = async (tokenFromCookie: string):Promise<RefreshTokenResult> => {
-    if (!tokenFromCookie) throw new Error("No Refresh Token");
+  if (new Date() > session.expiresAt) {
+    await prisma.session.delete({ where: { id: session.id } });
+    throw new Error("Refresh token expired");
+  }
 
-    // let payload: any;
-    // try {
-    //   payload = jwt.verify(tokenFromCookie, process.env.REFRESH_TOKEN_SECRET!);
-    // } catch {
-    //   throw new Error("Invalid or tampered refresh token");
-    // }
-    const session = await prisma.session.findUnique({
-      where: { refreshToken: tokenFromCookie },
-    });
+  const user = await prisma.user.findUnique({where: { id: session.userId }});
 
-      if (!session) throw new Error("Invalid refresh token");
+  if (!user?.isVerified)
+    throw new Error("Please verify your email before login.");
+  const allSessions = await prisma.session.findMany({where: { userId: user.id }});
 
-    if (new Date() > session.expiresAt) {
-      await prisma.session.delete({ where: { id: session.id } });
-      throw new Error("Refresh token expired")
-    }
+  if (allSessions.length > 3) {
+    const sessionsToDelete = [...allSessions]
+      .sort((a, b) => a.expiresAt.getTime() - b.expiresAt.getTime())
+      .slice(0, allSessions.length - 3);
 
-    const user = await prisma.user.findUnique({
-      where: { id: session.userId },
-    });
-    if (!user?.isVerified) throw new Error("Please verify your email before login.");
-    
-    // if (!user || !user.isActive) {
-    //   await prisma.session.delete({ where: { id: session.id } });
-    //   throw new Error("Account disabled or deleted");
-    // }
-    const newAccessToken = generateAccessToken({
-      id: user.id,
-      email: user.email,
-    });
+    await prisma.session.deleteMany({where: { id: { in: sessionsToDelete.map((s) => s.id) } }});
+  }
+  // if (!user || !user.isActive) {
+  //   await prisma.session.delete({ where: { id: session.id } });
+  //   throw new Error("Account disabled or deleted");
+  // }
+  const newAccessToken = generateAccessToken({id: user.id,email: user.email,});
+  const newRefreshToken = generateRefreshToken({id: user.id,email: user.email});
 
-    const newRefreshToken = generateRefreshToken({
-      id: user.id,
-      email: user.email,
-    });
+  await prisma.session.update({
+    where: { id: session.id },
+    data: {
+      refreshToken: newRefreshToken,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    },
+  });
 
-    await prisma.session.update({
-      where: { id: session.id },
-      data: {
-        refreshToken: newRefreshToken,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      },
-    });
+  return { newAccessToken, newRefreshToken };
+};
 
-    return { newAccessToken, newRefreshToken };
-}

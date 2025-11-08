@@ -1,3 +1,4 @@
+
 // TODO: Authentication Controller
 // Purpose: Handle authentication business logic
 // Usage: Called from auth routes
@@ -57,14 +58,6 @@ export const login = async (req: Request, res: Response) => {
     res.status(401).json({ error: err.message });
   }
 };
-
-/**
- * Handle user logout request
- */
-export function logout(req: Request, res: Response) {
-  // TODO: Implement logout logic
-}
-
 /**
  * Handle user refreshToken request
  */
@@ -111,3 +104,24 @@ export const refreshToken = async (req: Request, res: Response) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+/**
+ * Handle user logout request
+ */
+export const logout = async(req: Request, res: Response) => {
+  try {
+    const { refreshToken } = req.cookies; 
+    if (!refreshToken) {return res.status(401).json({ message: "Your Are Not Login" });}
+    await prisma.session.deleteMany({where:{refreshToken}})
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    })
+    return res.status(200).json({ message: "Logout successful" });
+  }catch(err:any) {
+    logger.error(`Refresh token error: ${err.message}`);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+
+}
