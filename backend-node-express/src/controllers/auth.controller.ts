@@ -2,11 +2,13 @@
 // Purpose: Handle authentication business logic
 // Usage: Called from auth routes
 // Responsibility: Implement register, login, logout, refreshToken methods
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import {
+  forgotPasswordService,
   loginUser,
   refreshTokenService,
   registerUser,
+  resetPasswordService,
 } from "../services/auth.service";
 import logger from "../utils/logger.util";
 import { errorResponse, successResponse } from "../utils/response.util";
@@ -134,6 +136,53 @@ export const logout = async (req: Request, res: Response) => {
     return res.status(200).json({ message: "Logout successful" });
   } catch (err: any) {
     logger.error(`Refresh token error: ${err.message}`);
-    return res.status(500).json({ message: "Internal server error" });
+    return res
+      .status(500)
+      .json(errorResponse("Internal server error", 500, err));
+  }
+};
+/**
+ * Handle user forgot password
+ */
+export const forgotPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email } = req.body;
+    const result = await forgotPasswordService(email);
+    res.status(200).json(
+      successResponse(
+        {
+          emailSent: true,
+          tokenId: result.tokenId,
+        },
+        "Password reset email sent successfully"
+      )
+    );
+  } catch (err: any) {
+    logger.error(`forget password errror: ${err.message}`);
+    return res
+      .status(500)
+      .json(errorResponse("Internal server error", 500, err));
+  }
+};
+
+export const resetPassword = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try{
+    const {token,newPassword} = req.body;
+    const result = await resetPasswordService(token,newPassword)
+    return res.status(200).json({ message: "reset Password successful" });
+  }
+  catch (err: any) {
+    logger.error(`forget password errror: ${err.message}`);
+    return res
+      .status(500)
+      .json(errorResponse("Internal server error", 500, err));
   }
 };
