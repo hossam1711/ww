@@ -1,21 +1,27 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { componentStyles } from '../../../../design-system';
+import { componentStyles, animations, hoverEffects, tapEffects } from '../../../../design-system';
+
+type ButtonVariant =
+  | 'primary'
+  | 'secondary'
+  | 'fullWidth'
+  | 'whiteBlackHover'
+  | 'yellowTextHoverBlack'
+  | 'whiteBgYellowTextHoverBlack'
+  | 'beigeSolid'
+  | 'beigeOutline'
+  | 'lightPrimary'
+  | 'lightSecondary';
 
 interface ButtonProps {
   children: React.ReactNode;
-  variant?: 
-    | 'primary'
-    | 'secondary'
-    | 'whiteBlackHover'
-    | 'yellowTextHoverBlack'
-    | 'whiteBgYellowTextHoverBlack'
-    | 'beigeSolid'
-    | 'beigeOutline';
+  variant?: ButtonVariant;
   onClick?: () => void;
   className?: string;
-  style?: React.CSSProperties;
+  type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
 }
 
 export default function Button({
@@ -23,18 +29,20 @@ export default function Button({
   variant = 'primary',
   onClick,
   className = '',
-  style,
+  type = 'button',
+  disabled = false,
 }: ButtonProps) {
-  const buttonClass = componentStyles.buttons[variant] || componentStyles.buttons.primary;
+  const buttonClass = componentStyles.buttons[variant];
 
   return (
     <motion.button
+      type={type}
       onClick={onClick}
-      className={`${buttonClass} ${className}`}
-      style={style}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 20, duration: 0.2 }}
+      disabled={disabled}
+      className={`${buttonClass} ${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+      whileHover={disabled ? {} : hoverEffects.scaleSmall}
+      whileTap={disabled ? {} : tapEffects.scaleSmall}
+      transition={animations.spring}
     >
       {children}
     </motion.button>
