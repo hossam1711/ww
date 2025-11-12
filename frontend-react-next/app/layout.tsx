@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import { Poppins, Geist_Mono, Playfair_Display, Noto_Sans_Arabic } from "next/font/google";
 import "./globals.css";
 
-/* ================================ */
-/* Google Fonts via next/font/google */
-/* ================================ */
+
 const poppins = Poppins({
   variable: "--font-poppins",
   subsets: ["latin"],
