@@ -10,18 +10,18 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: "Egypt's First Digital Dental Lab",
-  
+
   description: "Revolutionizing dental restoration with ExoCAD integration, real-time tracking, and instant online payments",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      <body
-        className={`${playfair.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <body className={`${playfair.variable} antialiased`}>{children}</body>
     </html>
   );
 }
