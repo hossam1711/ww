@@ -151,3 +151,4 @@ model AuditLog {
   newData   Json?
   createdAt DateTime @default(now())
 }
+
