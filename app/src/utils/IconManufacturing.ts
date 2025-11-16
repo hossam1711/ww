@@ -8,13 +8,9 @@ import {
   Package,
   Truck
 } from 'lucide-react';
+import { ProcessStep } from '../types';
 
-export interface ProcessStep {
-  id: string;
-  title: string;
-  icon: React.ComponentType<{ className?: string }>;
-  status: 'completed' | 'active' | 'pending';
-}
+// ProcessStep interface is now imported from the consolidated types file
 
 export const MANUFACTURING_STEPS: ProcessStep[] = [
   {

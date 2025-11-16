@@ -1,4 +1,4 @@
-import { ContactInfo } from '../../types/components';
+import { ContactInfo } from '../../types';
 
 export const CONTACT_INFO: ContactInfo[] = [
   {

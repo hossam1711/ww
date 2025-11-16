@@ -1,4 +1,4 @@
-import { WorkflowStep } from '../../types/components';
+import { WorkflowStep } from '../../types';
 
 export const WORKFLOW_STEPS: WorkflowStep[] = [
   {

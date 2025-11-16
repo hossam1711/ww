@@ -1,13 +1,8 @@
 // Workflow configuration
 import { Upload, CreditCard, TrendingUp, Truck } from 'lucide-react';
+import { WorkflowCard } from '../../types';
 
-export interface WorkflowCard {
-  step: string;
-  title: string;
-  description: string;
-  iconName: 'upload' | 'creditCard' | 'trendingUp' | 'truck';
-  iconComponent: React.ComponentType<{ size?: number; color?: string }>;
-}
+// WorkflowCard interface is now imported from the consolidated types file
 
 export const WORKFLOW_CARDS: WorkflowCard[] = [
   {

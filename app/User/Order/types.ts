@@ -1,19 +1,13 @@
-export interface Order {
-  id: string;
-  patientName: string;
-  orderType: 'Crown' | 'Bridge' | 'Denture' | 'Implant' | 'Other';
-  status: 'Pending' | 'In Progress' | 'Completed' | 'Cancelled';
-  date: string;
-  totalAmount: number;
-  urgency: 'Low' | 'Medium' | 'High';
-  material: string;
-  notes?: string;
-}
+// Re-export all order-related types from the consolidated types file
+export type {
+  Order,
+  OrderStats,
+  FileAttachment,
+  ManufacturingStep,
+  OrderFormData
+} from '../../src/types';
 
-export interface OrderStats {
-  total: number;
-  pending: number;
-  inProgress: number;
-  completed: number;
-  totalRevenue: number;
-}
+// Also re-export any order-specific props
+export type {
+  WelcomePageProps
+} from '../../src/types';
