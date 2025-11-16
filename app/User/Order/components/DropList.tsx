@@ -3,13 +3,9 @@
 import React, { useState, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  XCircle,
   PlusCircle,
-  List,
-  CheckCircle,
-  AlertTriangle,
-  Settings,
   Search,
+  Package,
 } from "lucide-react";
 import { STATUS_ITEMS } from '../../../src/config/UserData/statusData';
 
@@ -27,14 +23,12 @@ export const DropList: React.FC<SidebarIconsProps> = ({
   onShowOrdersTable
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [hoveredButton, setHoveredButton] = useState<string | null>(null);
 
   const totalOrders = useMemo(() => STATUS_ITEMS.reduce((sum, item) => sum + item.count, 0), []);
 
   const toggleDropdown = useCallback(() => setIsDropdownOpen(prev => !prev), []);
   const closeDropdown = useCallback(() => {
     setIsDropdownOpen(false);
-    setHoveredButton(null);
   }, []);
   const handleStatusClick = useCallback((statusId: string) => {
     onShowStatusOrders?.(statusId);
@@ -57,7 +51,7 @@ export const DropList: React.FC<SidebarIconsProps> = ({
           className="relative w-14 h-14 rounded-full shadow-lg flex items-center justify-center border border-white/20 overflow-hidden"
           style={{ background: 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 50%, #6366F1 100%)' }}
         >
-          <List className="w-6 h-6 text-white relative z-10" strokeWidth={2} />
+          <Package className="w-6 h-6 text-white relative z-10" strokeWidth={2} />
         </div>
 
         {totalOrders > 0 && (
@@ -70,6 +64,12 @@ export const DropList: React.FC<SidebarIconsProps> = ({
             {totalOrders}
           </motion.div>
         )}
+
+        <div className="mt-1">
+          <span className="bg-white/90 text-gray-700 text-xs font-medium px-3 py-1 rounded-full shadow-sm border border-gray-200">
+            All Orders
+          </span>
+        </div>
       </motion.div>
 
       {/* Status Dropdown */}
@@ -86,8 +86,6 @@ export const DropList: React.FC<SidebarIconsProps> = ({
               <motion.button
                 key={item.id}
                 onClick={() => handleStatusClick(item.id)}
-                onHoverStart={() => setHoveredButton(item.id)}
-                onHoverEnd={() => setHoveredButton(null)}
                 className="relative group flex flex-col items-center"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

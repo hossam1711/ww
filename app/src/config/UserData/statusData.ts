@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle, Settings, AlertTriangle, XCircle } from 'lucide-react';
+import { CheckCircle, Settings, AlertTriangle, XCircle, ShoppingBag } from 'lucide-react';
 
 export interface StatusItem {
   id: string;
@@ -11,6 +11,13 @@ export interface StatusItem {
 
 // Status configuration data
 export const STATUS_ITEMS: StatusItem[] = [
+  { 
+    id: "all-orders", 
+    Icon: ShoppingBag, 
+    label: "All Orders", 
+    gradient: ["#f65c5cff", "#ea1f11ff"], 
+    count: 6 
+  },
   { 
     id: "completed", 
     Icon: CheckCircle, 
