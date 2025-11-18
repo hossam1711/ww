@@ -37,26 +37,26 @@ export const SIZE_CLASSES = {
   }
 } as const;
 
-// Color schemes for different step statuses
+// Color schemes for different step statuses (matching landing page colors)
 export const getStepStatusColor = (status: 'completed' | 'active' | 'pending' | 'rejected'): StepColors => {
   const colorMap = {
     completed: {
-      bg: 'bg-green-500',
+      bg: 'bg-gradient-to-br from-emerald-500 to-green-500',
       icon: 'text-white',
-      border: 'border-green-500',
-      text: 'text-green-700'
+      border: 'border-emerald-500',
+      text: 'text-emerald-700'
     },
     active: {
-      bg: 'bg-blue-500',
+      bg: 'bg-gradient-to-br from-blue-500 to-cyan-500',
       icon: 'text-white',
       border: 'border-blue-500',
       text: 'text-blue-700'
     },
     pending: {
-      bg: 'bg-gray-300',
-      icon: 'text-gray-600',
-      border: 'border-gray-300',
-      text: 'text-gray-600'
+      bg: 'bg-gradient-to-br from-gray-400 to-gray-500',
+      icon: 'text-white',
+      border: 'border-gray-400',
+      text: 'text-gray-700'
     },
     rejected: {
       bg: 'bg-red-500',

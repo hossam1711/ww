@@ -1,6 +1,3 @@
-
-
-// app/User/Order/orders-list/page.tsx
 "use client";
 
 import React, { useState } from 'react';
@@ -16,12 +13,18 @@ export default function OrdersListPage() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   return (
-    <div className="min-h-screen bg-white p-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-white p-6">
+      <div className="max-w-[1600px] mx-auto">
+        
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">My Orders</h1>
+          <p className="text-gray-600">Track and manage your dental orders</p>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-          {/* LEFT — LIST OF ORDERS WITHOUT SCROLL */}
+          
+          {/* LEFT — Orders List */}
           <div className="lg:col-span-1 space-y-4">
             {orders.length > 0 ? (
               orders.map((order: Order, index: number) => (
@@ -47,8 +50,8 @@ export default function OrdersListPage() {
             )}
           </div>
 
-          {/* RIGHT — ORDER PROGRESS PANEL */}
-          <div className="lg:col-span-2 lg:sticky lg:top-6 lg:self-start">
+          {/* RIGHT — Order Progress */}
+          <div className="lg:col-span-2 lg:sticky lg:top-6 lg:self-start w-full">
             <AnimatePresence mode="wait">
               {selectedOrder ? (
                 <motion.div
