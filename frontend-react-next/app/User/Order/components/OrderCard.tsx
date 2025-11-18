@@ -55,9 +55,9 @@ const OrderCard: React.FC<OrderCardProps> = ({
       whileHover={{ y: -2 }}
       whileTap={{ scale: 0.98 }}
       className={`
-        bg-white rounded-lg shadow-md border p-3 cursor-pointer transition-all duration-200 max-w-xs
-        ${isSelected 
-          ? "border-blue-500 shadow-lg ring-2 ring-blue-200" 
+        bg-white rounded-lg shadow-md border p-5 cursor-pointer transition-all duration-200 max-w-xs
+        ${isSelected
+          ? "border-blue-500 shadow-lg ring-2 ring-blue-200"
           : "border-gray-200 hover:border-gray-300 hover:shadow-lg"
         }
       `}
